@@ -7,18 +7,28 @@ install:
   - bundle install
 
 rvm:
-  - 2.3.0
+- 2.4.1
 
 script:
   - bundle exec rake default
   - gem build sensu-plugins-kafka.gemspec
   - gem install sensu-plugins-kafka-*.gem
 
+before_deploy:
+  - git clone https://github.com/sensu/sensu-go-bonsai-asset.git --branch feature/ruby-plugin-assets bonsai
+
 deploy:
-  provider: rubygems
-  api_key:
-    secure: "ogxmrFkjbJysgcuMHF/nei0kjyOmjjTEFZy51KOCTTBNPFnbZfVnPaTZCokZXDAYTJMkkYV0e73JnGtdCDOu4jdj4S+cEOCW4PLs5A1/mlnx4ySjLt56JRtdCKGkIAbq4FRZe2GSIYIT3cAQr0Wmnc6XH2wxZZSZHiXwIwgUbuJ4tS32XnbszSOEInWWrryU6nHzi/nlHxAEXNr6gyIvYkv4hBXsEmKKJY757l1lpau3TXASReCkYssXgUYZw//eTSXw24dmSqXlHdImp5Q+2aKqBY8xyqv82Ge0YYfd+aeSRxfeK8CFcHSxGrlfYHAgyc2h8boGmT2nE2qAF7qelc1InZaGa6+8/ugRuyspv9pN3b3IqOZjR8mWI8/pWPeCUFbjXHO1yQU+3U3KexubAmzNXMIrl8KzFDmdVDnCS7aMzDqkfWnCBsOO/A6DHEETdPmd+QSjTbLeui6Q7knp99S55zdiI6ddgLFemH8qS0jfP3LI7XX/AWjDLDmqlnvmsUk+QASj0WvNCkHbLueFPzUlv0VPd4dpT5CaaAEIyZfewjLOTGENOjMpLl1gyJRWtPp+x7TcZoPy9DHooJT7kNo23VkDjGBKgS/Yf/pRKU4nszHntearf9zFc+2jnVRl3D95h12Ks3Uyw6vcTYfgm8odDAE3l4GA9jLqWeo6NPE="
-  gem: sensu-plugins-kafka
-  on:
-    tags: true
-    repo: obazoud/sensu-plugins-kafka
+  # - provider: rubygems
+  #   api_key:
+  #     secure: "ogxmrFkjbJysgcuMHF/nei0kjyOmjjTEFZy51KOCTTBNPFnbZfVnPaTZCokZXDAYTJMkkYV0e73JnGtdCDOu4jdj4S+cEOCW4PLs5A1/mlnx4ySjLt56JRtdCKGkIAbq4FRZe2GSIYIT3cAQr0Wmnc6XH2wxZZSZHiXwIwgUbuJ4tS32XnbszSOEInWWrryU6nHzi/nlHxAEXNr6gyIvYkv4hBXsEmKKJY757l1lpau3TXASReCkYssXgUYZw//eTSXw24dmSqXlHdImp5Q+2aKqBY8xyqv82Ge0YYfd+aeSRxfeK8CFcHSxGrlfYHAgyc2h8boGmT2nE2qAF7qelc1InZaGa6+8/ugRuyspv9pN3b3IqOZjR8mWI8/pWPeCUFbjXHO1yQU+3U3KexubAmzNXMIrl8KzFDmdVDnCS7aMzDqkfWnCBsOO/A6DHEETdPmd+QSjTbLeui6Q7knp99S55zdiI6ddgLFemH8qS0jfP3LI7XX/AWjDLDmqlnvmsUk+QASj0WvNCkHbLueFPzUlv0VPd4dpT5CaaAEIyZfewjLOTGENOjMpLl1gyJRWtPp+x7TcZoPy9DHooJT7kNo23VkDjGBKgS/Yf/pRKU4nszHntearf9zFc+2jnVRl3D95h12Ks3Uyw6vcTYfgm8odDAE3l4GA9jLqWeo6NPE="
+  #   gem: sensu-plugins-kafka
+  #   on:
+  #     tags: true
+  #     repo: Adirael/sensu-plugins-kafka
+  - provider: script
+    script: bonsai/ruby-runtime/travis-build-ruby-plugin-assets.sh sensu-plugins-kafka
+    skip_cleanup: true
+    on:
+      tags: true
+      all_branches: true
+      rvm: 2.4.1
